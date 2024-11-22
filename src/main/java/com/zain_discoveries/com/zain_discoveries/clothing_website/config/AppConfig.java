@@ -44,6 +44,7 @@ public class AppConfig {
         return httpSecurity.build();
     }
 
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
