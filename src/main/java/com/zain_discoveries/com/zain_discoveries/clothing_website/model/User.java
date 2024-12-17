@@ -1,5 +1,6 @@
 package com.zain_discoveries.com.zain_discoveries.clothing_website.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,8 +32,10 @@ public class User {
     @CollectionTable(name = "payment_information", joinColumns = @JoinColumn(name = "user_id"))
     private List<PaymentInformation> paymentInformations = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Rating> ratings = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private ArrayList<Review> reviews = new ArrayList<>();
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<>();
     private LocalDateTime createdAt;
 }
