@@ -1,6 +1,5 @@
 package com.zain_discoveries.com.zain_discoveries.clothing_website.config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

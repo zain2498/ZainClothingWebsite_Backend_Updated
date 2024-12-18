@@ -1,5 +1,6 @@
 package com.zain_discoveries.com.zain_discoveries.clothing_website.model;
 
+import com.zain_discoveries.com.zain_discoveries.clothing_website.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +35,9 @@ public class Order {
     private double totalPrice;
     private int totalDiscountedPrice;
     private int discount;
-    private int orderStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus orderStatus;
     private int totalItem;
     private LocalDateTime createdAt;
 }
