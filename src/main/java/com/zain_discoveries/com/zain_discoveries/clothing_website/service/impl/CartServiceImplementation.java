@@ -19,11 +19,12 @@ public class CartServiceImplementation implements CartService {
     private CartItemService cartItemService;
     private ProductService productService;
 
-    public CartServiceImplementation(CartRepository cartRepository, ProductService productService, CartItemService cartItemService){
+    public CartServiceImplementation(CartRepository cartRepository, ProductService productService, CartItemService cartItemService) {
         this.cartRepository = cartRepository;
         this.cartItemService = cartItemService;
         this.productService = productService;
     }
+
     @Override
     public Cart createCart(User user) {
         Cart cart = new Cart();
@@ -35,15 +36,15 @@ public class CartServiceImplementation implements CartService {
     public String addToCart(Long userId, AddItemRequest request) throws ProductException {
         Cart cart = cartRepository.findCartByUserId(userId);
         Product product = productService.findProductById(request.getProductId());
-        CartItem cartItemExist = cartItemService.isCartItemExist(cart,product,request.getSize(),userId);
+        CartItem cartItemExist = cartItemService.isCartItemExist(cart, product, request.getSize(), userId);
 
-        if (cartItemExist != null){
+        if (cartItemExist != null) {
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
             cartItem.setUserId(userId);
             cartItem.setQuantity(request.getQuantity());
-            cartItem.setPrice(request.getPrice()* request.getQuantity());
+            cartItem.setPrice(request.getPrice() * request.getQuantity());
             cartItem.setSize(request.getSize());
 
             CartItem createdCartItem = cartItemService.createCartItem(cartItem);
@@ -54,6 +55,10 @@ public class CartServiceImplementation implements CartService {
 
     @Override
     public Cart findUserCart(Long userId) throws Exception {
-        return null;
+        Cart cart = cartRepository.findCartByUserId(userId);
+        if (cart == null) {
+            throw new Exception("Cart not found with the userId: " + userId);
+        }
+        return cart;
     }
 }

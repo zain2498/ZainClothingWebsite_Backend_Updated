@@ -2,10 +2,13 @@ package com.zain_discoveries.com.zain_discoveries.clothing_website.controller;
 
 import com.zain_discoveries.com.zain_discoveries.clothing_website.config.JWTProvider;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.exception.UserException;
+import com.zain_discoveries.com.zain_discoveries.clothing_website.model.Cart;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.model.User;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.repository.UserRepository;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.request.LoginRequest;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.response.AuthResponse;
+import com.zain_discoveries.com.zain_discoveries.clothing_website.service.CartService;
+import com.zain_discoveries.com.zain_discoveries.clothing_website.service.UserService;
 import com.zain_discoveries.com.zain_discoveries.clothing_website.service.impl.CustomerUserServiceImplementation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,13 +26,15 @@ public class AuthController {
     private UserRepository userRepository;
     private JWTProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
+    private CartService cartService;
     private CustomerUserServiceImplementation customerUserServiceImplementation;
 
-    public AuthController(UserRepository userRepository, JWTProvider jwtProvider, PasswordEncoder passwordEncoder, CustomerUserServiceImplementation customerUserServiceImplementation) {
+    public AuthController(UserRepository userRepository,CartService cartService, JWTProvider jwtProvider, PasswordEncoder passwordEncoder, CustomerUserServiceImplementation customerUserServiceImplementation) {
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
         this.customerUserServiceImplementation = customerUserServiceImplementation;
         this.userRepository = userRepository;
+        this.cartService = cartService;
     }
 
     @PostMapping("/signup")
@@ -56,6 +58,7 @@ public class AuthController {
             createUser.setLastName(lastName);
 
             User savedUser = userRepository.save(createUser);
+            Cart cart = cartService.createCart(savedUser);
             Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser.getPassword());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtProvider.generateToken(authentication);
